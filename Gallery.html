@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery — NMSA Papua New Guinea</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Gallery-page placeholder label */
+        .gallery-placeholder-label {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center; z-index: 2;
+        }
+        .gallery-placeholder-label i {
+            display: block; font-size: 2.2rem;
+            color: rgba(255,255,255,.18); margin-bottom: .5rem;
+            transition: color .4s;
+        }
+        .gallery-item:hover .gallery-placeholder-label i { color: rgba(255,255,255,.32); }
+        .gallery-placeholder-label span {
+            font-family: var(--font-label); font-size: .65rem; font-weight: 600;
+            letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.2);
+            display: block; white-space: nowrap;
+        }
+        .upload-note {
+            text-align: center; padding: 1rem 0 2rem;
+            font-family: var(--font-label); font-size: .75rem; font-weight: 600;
+            letter-spacing: .15em; text-transform: uppercase;
+            color: rgba(0,201,224,.35);
+            display: flex; align-items: center; justify-content: center; gap: .6rem;
+        }
+        .upload-note::before, .upload-note::after { content:''; flex:1; max-width:80px; height:1px; background:rgba(0,201,224,.15); }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+    <div class="container nav-flex">
+        <a href="index.html" class="logo">
+            <div class="logo-emblem"><i class="fas fa-anchor"></i></div>
+            <div class="logo-text"><span class="logo-name">NMSA</span><span class="logo-sub">Papua New Guinea</span></div>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="initiatives.html">Initiatives</a></li>
+            <li><a href="gallery.html" class="active">Gallery</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <button class="btn-emergency" id="openModal"><i class="fas fa-exclamation-triangle"></i> Report Incident</button>
+        <button class="nav-hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+    <div class="nav-mobile" id="navMobile">
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="initiatives.html">Initiatives</a>
+        <a href="gallery.html" class="active">Gallery</a>
+        <a href="contact.html">Contact</a>
+        <button class="btn-emergency btn-emergency-mobile" id="openModalMobile"><i class="fas fa-exclamation-triangle"></i> Report Incident</button>
+    </div>
+</nav>
+
+<!-- INCIDENT MODAL -->
+<div class="modal-backdrop" id="incidentModal" role="dialog" aria-modal="true">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-header-left">
+                <div class="modal-icon"><i class="fas fa-ship"></i></div>
+                <div><h2>Report a Maritime Incident</h2><p>NMSA Maritime Rescue Coordination Centre</p></div>
+            </div>
+            <button class="modal-close" id="closeModal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-alert">
+                <i class="fas fa-phone-volume"></i>
+                <p><strong>Life at risk?</strong> Call the MRCC Hotline immediately: <strong>1234 1234</strong> (24 hours).</p>
+            </div>
+            <form id="incidentForm">
+                <div class="form-divider">Incident Details</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Incident Type <span class="required">*</span></label>
+                        <select required>
+                            <option value="" disabled selected>Select…</option>
+                            <option>Vessel in Distress</option><option>Person Overboard</option>
+                            <option>Vessel Collision</option><option>Vessel Fire</option>
+                            <option>Grounding</option><option>Oil Spill</option>
+                            <option>Capsizing</option><option>Missing Vessel</option><option>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Severity <span class="required">*</span></label>
+                        <select required>
+                            <option value="" disabled selected>Select…</option>
+                            <option>Distress – Immediate danger</option>
+                            <option>Urgency – May need help</option>
+                            <option>Safety – Hazardous</option>
+                            <option>Minor</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row triple">
+                    <div class="form-group"><label>Date <span class="required">*</span></label><input type="date" required></div>
+                    <div class="form-group"><label>Time</label><input type="time"></div>
+                    <div class="form-group"><label>Persons</label><input type="number" placeholder="0" min="0"></div>
+                </div>
+                <div class="form-row single"><div class="form-group"><label>Location <span class="required">*</span></label><input type="text" placeholder="GPS coordinates or description" required></div></div>
+                <div class="form-divider">Reporter Details</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Full Name <span class="required">*</span></label><input type="text" required></div>
+                    <div class="form-group"><label>Contact Number <span class="required">*</span></label><input type="tel" placeholder="+675" required></div>
+                </div>
+                <div class="form-row single"><div class="form-group"><label>Description <span class="required">*</span></label><textarea required placeholder="Describe what happened…"></textarea></div></div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <div class="modal-footer-note"><strong>Emergency: 1234 1234</strong><br>MRCC Port Moresby — 24/7</div>
+            <div class="modal-btns">
+                <button class="btn-ghost" id="cancelModal">Cancel</button>
+                <button class="btn-primary" id="submitIncident"><i class="fas fa-paper-plane"></i> Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+    <div class="page-hero-grid"></div>
+    <div class="page-hero-glow"></div>
+    <div class="page-hero-accent"></div>
+    <div class="container page-hero-content">
+        <div class="page-hero-breadcrumb"><a href="index.html">Home</a><i class="fas fa-chevron-right"></i><span>Gallery</span></div>
+        <div class="page-hero-tag">Photo &amp; Media</div>
+        <h1>NMSA <span>Gallery</span></h1>
+        <p class="page-hero-desc">Visual documentation of NMSA operations, community engagement, vessel inspections, and maritime activities across Papua New Guinea.</p>
+    </div>
+</section>
+
+<!-- CATEGORIES -->
+<section style="padding:3rem 0 .5rem;background:var(--deep)">
+    <div class="container">
+        <div class="gallery-cats" id="galleryCats">
+            <button class="gallery-cat-btn active" data-cat="all">All Photos</button>
+            <button class="gallery-cat-btn" data-cat="inspections">Inspections</button>
+            <button class="gallery-cat-btn" data-cat="community">Community</button>
+            <button class="gallery-cat-btn" data-cat="navigation">Aids to Navigation</button>
+            <button class="gallery-cat-btn" data-cat="training">Training</button>
+            <button class="gallery-cat-btn" data-cat="mrcc">MRCC Ops</button>
+        </div>
+    </div>
+</section>
+
+<!-- INSPECTIONS -->
+<section class="gallery-section" id="inspections" style="padding:2.5rem 0 5rem;">
+    <div class="container">
+        <div class="upload-note"><i class="fas fa-camera"></i> Images coming soon — placeholders shown</div>
+
+        <div class="section-header left" style="margin-bottom:1.75rem">
+            <div class="section-tag">Operations</div>
+            <h2 class="section-title">Vessel <span>Inspections</span></h2>
+        </div>
+        <div class="gallery-page-grid" data-section="inspections">
+            <div class="gallery-item tall" data-cat="inspections">
+                <div class="gallery-bg gallery-bg-1"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-search"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Port State Control</span><div class="gallery-title">Vessel Survey — Port Moresby</div></div>
+            </div>
+            <div class="gallery-item" data-cat="inspections">
+                <div class="gallery-bg gallery-bg-2"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-clipboard-check"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Safety Equipment</span><div class="gallery-title">Liferaft Inspection</div></div>
+            </div>
+            <div class="gallery-item" data-cat="inspections">
+                <div class="gallery-bg gallery-bg-3"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-fire-extinguisher"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Fire Safety Check</span><div class="gallery-title">Extinguisher Compliance</div></div>
+            </div>
+            <div class="gallery-item" data-cat="inspections">
+                <div class="gallery-bg gallery-bg-4"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-ship"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Hull Inspection</span><div class="gallery-title">Drydock Survey</div></div>
+            </div>
+            <div class="gallery-item" data-cat="inspections">
+                <div class="gallery-bg gallery-bg-5"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-id-badge"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Documentation</span><div class="gallery-title">Certificate Review</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMMUNITY AWARENESS -->
+<section style="padding:0 0 5rem;background:var(--abyss);position:relative" id="community">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent)"></div>
+    <div class="container" style="padding-top:4rem">
+        <div class="section-header left" style="margin-bottom:1.75rem">
+            <div class="section-tag">Outreach</div>
+            <h2 class="section-title">Community <span>Awareness</span></h2>
+        </div>
+        <div class="gallery-page-grid">
+            <div class="gallery-item" data-cat="community">
+                <div class="gallery-bg gallery-bg-2"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-users"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Village Outreach</span><div class="gallery-title">Water Safety Campaign</div></div>
+            </div>
+            <div class="gallery-item wide" data-cat="community">
+                <div class="gallery-bg gallery-bg-6"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-life-ring"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Lifejacket Distribution</span><div class="gallery-title">Coastal Province</div></div>
+            </div>
+            <div class="gallery-item" data-cat="community">
+                <div class="gallery-bg gallery-bg-1"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-school"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">School Programme</span><div class="gallery-title">Youth Safety Education</div></div>
+            </div>
+            <div class="gallery-item" data-cat="community">
+                <div class="gallery-bg gallery-bg-7"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-chalkboard-teacher"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Training Workshop</span><div class="gallery-title">Small Craft Operators</div></div>
+            </div>
+            <div class="gallery-item" data-cat="community">
+                <div class="gallery-bg gallery-bg-4"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-hands-helping"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Community Day</span><div class="gallery-title">Alotau Awareness</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- AIDS TO NAVIGATION -->
+<section style="padding:5rem 0;background:var(--deep)" id="navigation">
+    <div class="container">
+        <div class="section-header left" style="margin-bottom:1.75rem">
+            <div class="section-tag">Infrastructure</div>
+            <h2 class="section-title">Aids to <span>Navigation</span></h2>
+        </div>
+        <div class="gallery-page-grid">
+            <div class="gallery-item tall" data-cat="navigation">
+                <div class="gallery-bg gallery-bg-3"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-lightbulb"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Lighthouse</span><div class="gallery-title">Cape Vogel Light Station</div></div>
+            </div>
+            <div class="gallery-item" data-cat="navigation">
+                <div class="gallery-bg gallery-bg-5"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-map-pin"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Channel Marker</span><div class="gallery-title">Fairway Buoy Installation</div></div>
+            </div>
+            <div class="gallery-item" data-cat="navigation">
+                <div class="gallery-bg gallery-bg-8"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-solar-panel"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Solar Upgrade</span><div class="gallery-title">Off-grid Beacon</div></div>
+            </div>
+            <div class="gallery-item" data-cat="navigation">
+                <div class="gallery-bg gallery-bg-2"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-compass"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Maintenance</span><div class="gallery-title">Buoy Servicing</div></div>
+            </div>
+            <div class="gallery-item" data-cat="navigation">
+                <div class="gallery-bg gallery-bg-6"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-water"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Port Entry</span><div class="gallery-title">Navigation Channel</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TRAINING -->
+<section style="padding:0 0 5rem;background:var(--abyss);position:relative" id="training">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent)"></div>
+    <div class="container" style="padding-top:4rem">
+        <div class="section-header left" style="margin-bottom:1.75rem">
+            <div class="section-tag">Education</div>
+            <h2 class="section-title">Training &amp; <span>Certification</span></h2>
+        </div>
+        <div class="gallery-page-grid">
+            <div class="gallery-item wide" data-cat="training">
+                <div class="gallery-bg gallery-bg-1"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-cogs"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Simulator</span><div class="gallery-title">Engine Room Training</div></div>
+            </div>
+            <div class="gallery-item" data-cat="training">
+                <div class="gallery-bg gallery-bg-4"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-graduation-cap"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Graduation</span><div class="gallery-title">Officer Certification</div></div>
+            </div>
+            <div class="gallery-item" data-cat="training">
+                <div class="gallery-bg gallery-bg-7"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-life-ring"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Survival Training</span><div class="gallery-title">Sea Survival Course</div></div>
+            </div>
+            <div class="gallery-item" data-cat="training">
+                <div class="gallery-bg gallery-bg-3"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-fire"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Fire Fighting</span><div class="gallery-title">Basic Fire Training</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MRCC -->
+<section style="padding:5rem 0 6rem;background:var(--deep)" id="mrcc">
+    <div class="container">
+        <div class="section-header left" style="margin-bottom:1.75rem">
+            <div class="section-tag">Operations</div>
+            <h2 class="section-title">MRCC <span>Port Moresby</span></h2>
+        </div>
+        <div class="gallery-page-grid">
+            <div class="gallery-item tall" data-cat="mrcc">
+                <div class="gallery-bg gallery-bg-5"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-broadcast-tower"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Operations Centre</span><div class="gallery-title">24/7 Watch</div></div>
+            </div>
+            <div class="gallery-item" data-cat="mrcc">
+                <div class="gallery-bg gallery-bg-1"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-satellite-dish"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Communications</span><div class="gallery-title">GMDSS Station</div></div>
+            </div>
+            <div class="gallery-item" data-cat="mrcc">
+                <div class="gallery-bg gallery-bg-6"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-helicopter"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">SAR Exercise</span><div class="gallery-title">Search &amp; Rescue Drill</div></div>
+            </div>
+            <div class="gallery-item" data-cat="mrcc">
+                <div class="gallery-bg gallery-bg-8"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-chart-line"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">Monitoring</span><div class="gallery-title">Vessel Tracking</div></div>
+            </div>
+            <div class="gallery-item" data-cat="mrcc">
+                <div class="gallery-bg gallery-bg-2"></div>
+                <div class="gallery-placeholder-label"><i class="fas fa-phone-volume"></i><span>Photo Placeholder</span></div>
+                <div class="gallery-overlay"><span class="gallery-label">MRCC</span><div class="gallery-title">Distress Call Handling</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ALERT BANNER -->
+<div class="alert-banner">
+    <div class="container">
+        <div class="alert-inner">
+            <span class="alert-tag">Emergency</span>
+            <p class="alert-text"><strong>Maritime Distress Hotline:</strong> Contact NMSA MRCC on <strong>1234 1234</strong> (24 hours).</p>
+            <a href="tel:12341234" class="alert-action">Call Now <i class="fas fa-phone-alt"></i></a>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <a href="index.html" class="logo" style="margin-bottom:1rem;display:inline-flex">
+                    <div class="logo-emblem"><i class="fas fa-anchor"></i></div>
+                    <div class="logo-text"><span class="logo-name">NMSA</span><span class="logo-sub">Papua New Guinea</span></div>
+                </a>
+                <p>The statutory authority for maritime safety, marine environment protection, and maritime transport regulation in Papua New Guinea.</p>
+                <div class="footer-social">
+                    <a class="social-btn" href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a class="social-btn" href="#"><i class="fab fa-twitter"></i></a>
+                    <a class="social-btn" href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a class="social-btn" href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Headquarters</h4>
+                <div class="footer-contact-line"><i class="fas fa-map-marker-alt"></i><p>Defens Haus, Douglas Street<br>Port Moresby, NCD</p></div>
+                <div class="footer-contact-line"><i class="fas fa-mail-bulk"></i><p>PO Box 668, Port Moresby</p></div>
+                <div class="footer-contact-line"><i class="fas fa-phone-alt"></i><p><strong style="color:var(--gold)">1234 1234</strong> (24hr)</p></div>
+            </div>
+            <div class="footer-col">
+                <h4>Regional Offices</h4>
+                <ul>
+                    <li><span><i class="fas fa-circle-dot"></i>Lae Office</span></li>
+                    <li><span><i class="fas fa-circle-dot"></i>Madang Office</span></li>
+                    <li><span><i class="fas fa-circle-dot"></i>Alotau Office</span></li>
+                    <li><span><i class="fas fa-circle-dot"></i>Rabaul Office</span></li>
+                    <li><span><i class="fas fa-circle-dot"></i>Kimbe Office</span></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Report Pollution</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Vessel Registration</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Seafarer Certification</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Tenders &amp; Contracts</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Careers</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 National Maritime Safety Authority Papua New Guinea. All Rights Reserved.</p>
+            <div class="footer-bottom-links"><a href="#">Privacy Policy</a><a href="#">Terms of Use</a><a href="#">Accessibility</a></div>
+        </div>
+    </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+    // Gallery category filter — scroll to section
+    const catBtns = document.querySelectorAll('.gallery-cat-btn');
+    const sections = { inspections:'#inspections', community:'#community', navigation:'#navigation', training:'#training', mrcc:'#mrcc' };
+    catBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            catBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const cat = btn.dataset.cat;
+            if (cat !== 'all' && sections[cat]) {
+                document.querySelector(sections[cat]).scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+        });
+    });
+</script>
+</body>
+</html>
