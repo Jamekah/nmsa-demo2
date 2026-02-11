@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — NMSA Papua New Guinea</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <style>
+        /* Override Leaflet defaults for dark theme */
+        .leaflet-container { background: #0a1e35 !important; font-family: var(--font-body); }
+        .leaflet-tile { filter: brightness(.72) saturate(.5) hue-rotate(185deg); }
+        .leaflet-popup-content-wrapper {
+            background: #0d2d52; border: 1px solid rgba(0,201,224,.3);
+            border-radius: 4px; box-shadow: 0 8px 30px rgba(0,0,0,.5);
+            color: var(--white);
+        }
+        .leaflet-popup-tip { background: #0d2d52; }
+        .leaflet-popup-close-button { color: rgba(160,200,230,.6) !important; }
+        .leaflet-popup-close-button:hover { color: var(--aqua) !important; }
+        .leaflet-popup-content { margin: 14px 18px; }
+        .popup-name {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: .8rem; font-weight: 700; letter-spacing: .12em;
+            text-transform: uppercase; color: #00c9e0; margin-bottom: .3rem;
+        }
+        .popup-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem; font-weight: 600; color: #f0f6ff; margin-bottom: .35rem;
+        }
+        .popup-detail {
+            font-size: .82rem; color: rgba(160,200,230,.75); line-height: 1.55;
+        }
+        .leaflet-control-zoom a {
+            background: #0d2d52 !important; color: #a8e6f0 !important;
+            border-color: rgba(0,201,224,.25) !important;
+        }
+        .leaflet-control-zoom a:hover { background: rgba(0,144,178,.3) !important; color: #00c9e0 !important; }
+        .leaflet-control-attribution { background: rgba(5,15,28,.7) !important; color: rgba(160,200,230,.4) !important; }
+        .leaflet-control-attribution a { color: rgba(0,201,224,.5) !important; }
+        /* Custom marker */
+        .custom-marker-pin {
+            width: 30px; height: 30px;
+            background: linear-gradient(135deg, #0090b2, #00c9e0);
+            border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+            border: 2px solid rgba(255,255,255,.3);
+            box-shadow: 0 4px 15px rgba(0,201,224,.4);
+        }
+        .custom-marker-pin.gold {
+            background: linear-gradient(135deg, #c8961e, #e8b84b);
+            box-shadow: 0 4px 15px rgba(232,184,75,.4);
+        }
+        .form-success {
+            display: none; text-align: center; padding: 2rem;
+        }
+        .form-success i { font-size: 2.5rem; color: #6fcf97; margin-bottom: 1rem; display: block; }
+        .form-success h4 { font-family: var(--font-display); font-size: 1.4rem; color: var(--white); margin-bottom: .5rem; }
+        .form-success p { font-size: .9rem; color: var(--muted); }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+    <div class="container nav-flex">
+        <a href="index.html" class="logo">
+            <div class="logo-emblem"><i class="fas fa-anchor"></i></div>
+            <div class="logo-text"><span class="logo-name">NMSA</span><span class="logo-sub">Papua New Guinea</span></div>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="initiatives.html">Initiatives</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+        <button class="btn-emergency" id="openModal"><i class="fas fa-exclamation-triangle"></i> Report Incident</button>
+        <button class="nav-hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+    <div class="nav-mobile" id="navMobile">
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="initiatives.html">Initiatives</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="contact.html" class="active">Contact</a>
+        <button class="btn-emergency btn-emergency-mobile" id="openModalMobile"><i class="fas fa-exclamation-triangle"></i> Report Incident</button>
+    </div>
+</nav>
+
+<!-- INCIDENT MODAL -->
+<div class="modal-backdrop" id="incidentModal" role="dialog" aria-modal="true">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-header-left">
+                <div class="modal-icon"><i class="fas fa-ship"></i></div>
+                <div><h2>Report a Maritime Incident</h2><p>NMSA Maritime Rescue Coordination Centre</p></div>
+            </div>
+            <button class="modal-close" id="closeModal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-alert">
+                <i class="fas fa-phone-volume"></i>
+                <p><strong>Life at risk?</strong> Call the MRCC Hotline: <strong>1234 1234</strong> (24 hours).</p>
+            </div>
+            <form id="incidentForm">
+                <div class="form-divider">Incident Details</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Incident Type <span class="required">*</span></label>
+                        <select required><option value="" disabled selected>Select…</option><option>Vessel in Distress</option><option>Person Overboard</option><option>Vessel Collision</option><option>Oil Spill</option><option>Grounding</option><option>Other</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Severity <span class="required">*</span></label>
+                        <select required><option value="" disabled selected>Select…</option><option>Distress – Immediate danger</option><option>Urgency</option><option>Safety</option><option>Minor</option></select>
+                    </div>
+                </div>
+                <div class="form-row triple">
+                    <div class="form-group"><label>Date <span class="required">*</span></label><input type="date" required></div>
+                    <div class="form-group"><label>Time</label><input type="time"></div>
+                    <div class="form-group"><label>Persons</label><input type="number" placeholder="0" min="0"></div>
+                </div>
+                <div class="form-row single"><div class="form-group"><label>Location <span class="required">*</span></label><input type="text" placeholder="GPS or description" required></div></div>
+                <div class="form-divider">Reporter Details</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Full Name <span class="required">*</span></label><input type="text" required></div>
+                    <div class="form-group"><label>Contact Number <span class="required">*</span></label><input type="tel" placeholder="+675" required></div>
+                </div>
+                <div class="form-row single"><div class="form-group"><label>Description <span class="required">*</span></label><textarea required placeholder="Describe what happened…"></textarea></div></div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <div class="modal-footer-note"><strong>Emergency: 1234 1234</strong><br>MRCC 24/7</div>
+            <div class="modal-btns">
+                <button class="btn-ghost" id="cancelModal">Cancel</button>
+                <button class="btn-primary" id="submitIncident"><i class="fas fa-paper-plane"></i> Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+    <div class="page-hero-grid"></div>
+    <div class="page-hero-glow"></div>
+    <div class="page-hero-accent"></div>
+    <div class="container page-hero-content">
+        <div class="page-hero-breadcrumb"><a href="index.html">Home</a><i class="fas fa-chevron-right"></i><span>Contact</span></div>
+        <div class="page-hero-tag">Get In Touch</div>
+        <h1>Contact <span>NMSA</span></h1>
+        <p class="page-hero-desc">Reach our headquarters, regional offices, or the 24/7 Maritime Rescue Coordination Centre in Port Moresby.</p>
+    </div>
+</section>
+
+<!-- CONTACT MAIN -->
+<section class="contact-section" style="background:var(--deep)">
+    <div class="container">
+        <div class="contact-grid">
+
+            <!-- Left: Info -->
+            <div>
+                <h3 class="reveal" style="font-family:var(--font-display);font-size:1.7rem;font-weight:400;color:var(--white);margin-bottom:1.5rem">How to <span style="color:var(--aqua)">Reach Us</span></h3>
+
+                <div class="contact-info-item reveal">
+                    <div class="ci-icon"><i class="fas fa-phone-volume"></i></div>
+                    <div class="ci-text">
+                        <h5>24hr Emergency Hotline</h5>
+                        <p><a href="tel:12341234" style="color:var(--gold);font-size:1.05rem;font-weight:600">1234 1234</a><br>Maritime Rescue Coordination Centre (MRCC)</p>
+                    </div>
+                </div>
+
+                <div class="contact-info-item reveal reveal-delay-1">
+                    <div class="ci-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="ci-text">
+                        <h5>Headquarters</h5>
+                        <p>Defens Haus, Level 5, Douglas Street<br>Port Moresby, NCD, Papua New Guinea</p>
+                    </div>
+                </div>
+
+                <div class="contact-info-item reveal reveal-delay-2">
+                    <div class="ci-icon"><i class="fas fa-envelope"></i></div>
+                    <div class="ci-text">
+                        <h5>Email</h5>
+                        <p><a href="mailto:info@nmsa.gov.pg">info@nmsa.gov.pg</a><br><a href="mailto:mrcc@nmsa.gov.pg">mrcc@nmsa.gov.pg</a></p>
+                    </div>
+                </div>
+
+                <div class="contact-info-item reveal reveal-delay-3">
+                    <div class="ci-icon"><i class="fas fa-clock"></i></div>
+                    <div class="ci-text">
+                        <h5>Office Hours</h5>
+                        <p>Monday – Friday: 8:00 AM – 5:00 PM<br>MRCC Operations: 24 hours / 7 days</p>
+                    </div>
+                </div>
+
+                <div class="contact-info-item reveal">
+                    <div class="ci-icon"><i class="fas fa-mail-bulk"></i></div>
+                    <div class="ci-text">
+                        <h5>Postal Address</h5>
+                        <p>PO Box 668<br>Port Moresby, NCD 121, PNG</p>
+                    </div>
+                </div>
+
+                <div class="contact-info-item reveal reveal-delay-1">
+                    <div class="ci-icon"><i class="fas fa-fax"></i></div>
+                    <div class="ci-text">
+                        <h5>Fax</h5>
+                        <p>+675 321 XXXX</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Contact Form -->
+            <div class="contact-form-wrap reveal reveal-delay-1">
+                <h3>Send Us a <span style="color:var(--aqua)">Message</span></h3>
+                <form id="contactForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cf-name">Full Name <span class="required">*</span></label>
+                            <input type="text" id="cf-name" placeholder="Your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cf-org">Organisation</label>
+                            <input type="text" id="cf-org" placeholder="Company / Agency">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cf-email">Email Address <span class="required">*</span></label>
+                            <input type="email" id="cf-email" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cf-phone">Phone Number</label>
+                            <input type="tel" id="cf-phone" placeholder="+675 XXXX XXXX">
+                        </div>
+                    </div>
+                    <div class="form-row single">
+                        <div class="form-group">
+                            <label for="cf-subject">Subject / Department <span class="required">*</span></label>
+                            <select id="cf-subject" required>
+                                <option value="" disabled selected>Select a topic…</option>
+                                <option>Vessel Registration Enquiry</option>
+                                <option>Seafarer Certification</option>
+                                <option>Port State Control</option>
+                                <option>Marine Environment / MARPOL</option>
+                                <option>Small Craft Registration</option>
+                                <option>Aids to Navigation</option>
+                                <option>MRCC / SAR Enquiry</option>
+                                <option>Tenders &amp; Procurement</option>
+                                <option>Employment Enquiry</option>
+                                <option>Media &amp; Communications</option>
+                                <option>General Enquiry</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row single">
+                        <div class="form-group">
+                            <label for="cf-message">Message <span class="required">*</span></label>
+                            <textarea id="cf-message" placeholder="Write your message here…" style="min-height:130px" required></textarea>
+                        </div>
+                    </div>
+                    <div style="margin-top:.5rem">
+                        <button type="submit" class="btn-primary" style="width:100%;justify-content:center">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </div>
+                </form>
+                <div class="form-success" id="formSuccess">
+                    <i class="fas fa-check-circle"></i>
+                    <h4>Message Sent!</h4>
+                    <p>Thank you for contacting NMSA. Our team will respond within 2 business days.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MAP -->
+<section class="map-section" style="background:var(--deep)">
+    <div class="container">
+        <div class="section-header" style="margin-bottom:2rem">
+            <div class="section-tag">Our Location</div>
+            <h2 class="section-title">Find <span>NMSA</span></h2>
+        </div>
+        <div class="map-container reveal">
+            <div id="nmsa-map"></div>
+        </div>
+    </div>
+</section>
+
+<!-- REGIONAL OFFICES -->
+<section style="padding:5rem 0 6rem;background:var(--abyss);position:relative">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent)"></div>
+    <div class="container">
+        <div class="section-header">
+            <div class="section-tag">Nationwide Network</div>
+            <h2 class="section-title">Regional <span>Offices</span></h2>
+        </div>
+        <div class="offices-grid">
+            <div class="office-card reveal">
+                <h4>Lae Office</h4>
+                <div class="office-region">Morobe Province</div>
+                <p>Voco Point, Lae, Morobe Province<br>Covering Morobe, Eastern Highlands &amp; Gulf.</p>
+                <div class="office-phone"><i class="fas fa-phone" style="margin-right:.4rem;font-size:.75rem"></i>+675 472 XXXX</div>
+            </div>
+            <div class="office-card reveal reveal-delay-1">
+                <h4>Madang Office</h4>
+                <div class="office-region">Madang Province</div>
+                <p>Coastwatcher Avenue, Madang Town<br>Covering Madang, Sepik &amp; Manus.</p>
+                <div class="office-phone"><i class="fas fa-phone" style="margin-right:.4rem;font-size:.75rem"></i>+675 852 XXXX</div>
+            </div>
+            <div class="office-card reveal reveal-delay-2">
+                <h4>Alotau Office</h4>
+                <div class="office-region">Milne Bay Province</div>
+                <p>Alotau Waterfront, Milne Bay Province<br>Covering Milne Bay &amp; Oro Province.</p>
+                <div class="office-phone"><i class="fas fa-phone" style="margin-right:.4rem;font-size:.75rem"></i>+675 641 XXXX</div>
+            </div>
+            <div class="office-card reveal">
+                <h4>Rabaul Office</h4>
+                <div class="office-region">East New Britain Province</div>
+                <p>Kokopo Wharf, East New Britain Province<br>Covering ENB, WNB &amp; New Ireland.</p>
+                <div class="office-phone"><i class="fas fa-phone" style="margin-right:.4rem;font-size:.75rem"></i>+675 982 XXXX</div>
+            </div>
+            <div class="office-card reveal reveal-delay-1">
+                <h4>Kimbe Office</h4>
+                <div class="office-region">West New Britain Province</div>
+                <p>Kimbe Bay Port, West New Britain<br>Covering WNB &amp; West Sepik.</p>
+                <div class="office-phone"><i class="fas fa-phone" style="margin-right:.4rem;font-size:.75rem"></i>+675 983 XXXX</div>
+            </div>
+            <div class="office-card reveal reveal-delay-2" style="background:rgba(0,144,178,.08);border-color:rgba(0,201,224,.25)">
+                <h4 style="color:var(--aqua)">MRCC Port Moresby</h4>
+                <div class="office-region">National Operations — 24/7</div>
+                <p>Defens Haus, Port Moresby<br>Maritime Rescue Coordination Centre</p>
+                <div class="office-phone" style="color:var(--gold)"><i class="fas fa-phone-volume" style="margin-right:.4rem;font-size:.75rem"></i>1234 1234 (24hrs)</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ALERT BANNER -->
+<div class="alert-banner">
+    <div class="container">
+        <div class="alert-inner">
+            <span class="alert-tag">Emergency</span>
+            <p class="alert-text"><strong>Maritime Distress Hotline:</strong> Contact NMSA MRCC on <strong>1234 1234</strong> (24 hours).</p>
+            <a href="tel:12341234" class="alert-action">Call Now <i class="fas fa-phone-alt"></i></a>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <a href="index.html" class="logo" style="margin-bottom:1rem;display:inline-flex">
+                    <div class="logo-emblem"><i class="fas fa-anchor"></i></div>
+                    <div class="logo-text"><span class="logo-name">NMSA</span><span class="logo-sub">Papua New Guinea</span></div>
+                </a>
+                <p>The statutory authority for maritime safety, marine environment protection, and maritime transport regulation in Papua New Guinea.</p>
+                <div class="footer-social">
+                    <a class="social-btn" href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a class="social-btn" href="#"><i class="fab fa-twitter"></i></a>
+                    <a class="social-btn" href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a class="social-btn" href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Headquarters</h4>
+                <div class="footer-contact-line"><i class="fas fa-map-marker-alt"></i><p>Defens Haus, Douglas Street<br>Port Moresby, NCD</p></div>
+                <div class="footer-contact-line"><i class="fas fa-mail-bulk"></i><p>PO Box 668, Port Moresby</p></div>
+                <div class="footer-contact-line"><i class="fas fa-phone-alt"></i><p><strong style="color:var(--gold)">1234 1234</strong> (24hr)</p></div>
+            </div>
+            <div class="footer-col">
+                <h4>Regional Offices</h4>
+                <ul>
+                    <li><span><i class="fas fa-circle-dot"></i>Lae Office</span></li>
+                    <li><span><i class="fas fa-circle-dot"></i>Madang Office</span></li>
+                    <li><span><i class="fas fa-circle-dot"></i>Alotau Office</span></li>
+                    <li><span><i class="fas fa-circle-dot"></i>Rabaul Office</span></li>
+                    <li><span><i class="fas fa-circle-dot"></i>Kimbe Office</span></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Report Pollution</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Vessel Registration</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Seafarer Certification</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Tenders &amp; Contracts</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Careers</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 National Maritime Safety Authority Papua New Guinea. All Rights Reserved.</p>
+            <div class="footer-bottom-links"><a href="#">Privacy Policy</a><a href="#">Terms of Use</a><a href="#">Accessibility</a></div>
+        </div>
+    </div>
+</footer>
+
+<!-- Leaflet JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="main.js"></script>
+<script>
+    // ── Leaflet Map ─────────────────────────────────────────────
+    const map = L.map('nmsa-map', {
+        center: [-9.4438, 147.1803],
+        zoom: 13,
+        zoomControl: true,
+        scrollWheelZoom: false
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
+    }).addTo(map);
+
+    // Custom icon factory
+    function makeIcon(color) {
+        return L.divIcon({
+            className: '',
+            html: `<div class="custom-marker-pin ${color === 'gold' ? 'gold' : ''}"></div>`,
+            iconSize: [30, 30],
+            iconAnchor: [15, 30],
+            popupAnchor: [0, -32]
+        });
+    }
+
+    // HQ marker
+    L.marker([-9.4438, 147.1803], { icon: makeIcon('gold') })
+        .addTo(map)
+        .bindPopup(`
+            <div class="popup-name">Headquarters</div>
+            <div class="popup-title">NMSA — National Maritime Safety Authority</div>
+            <div class="popup-detail">
+                Defens Haus, Douglas Street<br>
+                Port Moresby, NCD, Papua New Guinea<br><br>
+                <strong style="color:#e8b84b">Hotline: 1234 1234</strong> (24/7 MRCC)
+            </div>
+        `)
+        .openPopup();
+
+    // MRCC marker (slightly offset for clarity)
+    L.marker([-9.4468, 147.1823], { icon: makeIcon('teal') })
+        .addTo(map)
+        .bindPopup(`
+            <div class="popup-name">Operations Centre</div>
+            <div class="popup-title">MRCC — Maritime Rescue Coordination Centre</div>
+            <div class="popup-detail">
+                Port Moresby, NCD<br>
+                24/7 Search &amp; Rescue Operations<br><br>
+                <strong style="color:#00c9e0">Emergency: 1234 1234</strong>
+            </div>
+        `);
+
+    // Port of Moresby marker
+    L.marker([-9.4570, 147.1720], { icon: makeIcon('teal') })
+        .addTo(map)
+        .bindPopup(`
+            <div class="popup-name">Port</div>
+            <div class="popup-title">Port of Port Moresby</div>
+            <div class="popup-detail">
+                Principal commercial port of PNG.<br>
+                NMSA Port State Control operations.
+            </div>
+        `);
+
+    // ── Contact form fake submit ────────────────────────────────
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        this.style.display = 'none';
+        document.getElementById('formSuccess').style.display = 'block';
+    });
+</script>
+</body>
+</html>
