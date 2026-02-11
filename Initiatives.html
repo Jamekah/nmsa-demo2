@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initiatives — NMSA Papua New Guinea</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+    <div class="container nav-flex">
+        <a href="index.html" class="logo">
+            <div class="logo-emblem"><i class="fas fa-anchor"></i></div>
+            <div class="logo-text"><span class="logo-name">NMSA</span><span class="logo-sub">Papua New Guinea</span></div>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="initiatives.html" class="active">Initiatives</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <button class="btn-emergency" id="openModal"><i class="fas fa-exclamation-triangle"></i> Report Incident</button>
+        <button class="nav-hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+    <div class="nav-mobile" id="navMobile">
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="initiatives.html" class="active">Initiatives</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="contact.html">Contact</a>
+        <button class="btn-emergency btn-emergency-mobile" id="openModalMobile"><i class="fas fa-exclamation-triangle"></i> Report Incident</button>
+    </div>
+</nav>
+
+<!-- INCIDENT MODAL -->
+<div class="modal-backdrop" id="incidentModal" role="dialog" aria-modal="true">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-header-left">
+                <div class="modal-icon"><i class="fas fa-ship"></i></div>
+                <div><h2>Report a Maritime Incident</h2><p>NMSA Maritime Rescue Coordination Centre</p></div>
+            </div>
+            <button class="modal-close" id="closeModal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-alert">
+                <i class="fas fa-phone-volume"></i>
+                <p><strong>Life at risk?</strong> Call the MRCC Hotline immediately: <strong>1234 1234</strong> (24 hours). This form is for non-emergency reporting.</p>
+            </div>
+            <form id="incidentForm">
+                <div class="form-divider">Incident Details</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="incidentType">Incident Type <span class="required">*</span></label>
+                        <select id="incidentType" required>
+                            <option value="" disabled selected>Select incident type…</option>
+                            <option>Vessel in Distress</option><option>Person Overboard</option>
+                            <option>Vessel Collision</option><option>Vessel Fire / Explosion</option>
+                            <option>Grounding / Stranding</option><option>Oil Spill / Pollution</option>
+                            <option>Capsizing / Flooding</option><option>Missing Vessel</option>
+                            <option>Unsafe Vessel Operation</option><option>Other Maritime Incident</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="severity">Severity <span class="required">*</span></label>
+                        <select id="severity" required>
+                            <option value="" disabled selected>Select severity…</option>
+                            <option>Distress – Immediate danger to life</option>
+                            <option>Urgency – May need assistance</option>
+                            <option>Safety – Hazardous situation</option>
+                            <option>Minor – No immediate danger</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row triple">
+                    <div class="form-group"><label>Date <span class="required">*</span></label><input type="date" required></div>
+                    <div class="form-group"><label>Time</label><input type="time"></div>
+                    <div class="form-group"><label>Persons</label><input type="number" placeholder="0" min="0"></div>
+                </div>
+                <div class="form-row single"><div class="form-group"><label>Location <span class="required">*</span></label><input type="text" placeholder="e.g. 5nm NW of Alotau, GPS: -10.123, 150.456" required></div></div>
+                <div class="form-divider">Vessel &amp; Reporter</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Vessel Name</label><input type="text" placeholder="e.g. MV Kimbe Star"></div>
+                    <div class="form-group"><label>Vessel Type</label><select><option value="" disabled selected>Select…</option><option>Cargo Ship</option><option>Passenger Ferry</option><option>Fishing Vessel</option><option>Small Craft</option><option>Unknown</option></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Your Name <span class="required">*</span></label><input type="text" required></div>
+                    <div class="form-group"><label>Contact Number <span class="required">*</span></label><input type="tel" placeholder="+675 XXXX XXXX" required></div>
+                </div>
+                <div class="form-row single"><div class="form-group"><label>Description <span class="required">*</span></label><textarea required placeholder="Describe what happened…"></textarea></div></div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <div class="modal-footer-note"><strong>Emergency: 1234 1234</strong><br>MRCC Port Moresby — 24/7</div>
+            <div class="modal-btns">
+                <button class="btn-ghost" id="cancelModal">Cancel</button>
+                <button class="btn-primary" id="submitIncident"><i class="fas fa-paper-plane"></i> Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+    <div class="page-hero-grid"></div>
+    <div class="page-hero-glow"></div>
+    <div class="page-hero-accent"></div>
+    <div class="container page-hero-content">
+        <div class="page-hero-breadcrumb"><a href="index.html">Home</a><i class="fas fa-chevron-right"></i><span>Initiatives</span></div>
+        <div class="page-hero-tag">Active Programs</div>
+        <h1>NMSA <span>Initiatives</span></h1>
+        <p class="page-hero-desc">Programmes and projects advancing maritime safety, training, infrastructure, and community awareness across Papua New Guinea.</p>
+    </div>
+</section>
+
+<!-- FILTER TABS -->
+<section style="padding:3rem 0 1rem;background:var(--deep)">
+    <div class="container">
+        <div class="gallery-cats" id="filterBtns">
+            <button class="gallery-cat-btn active" data-filter="all">All Initiatives</button>
+            <button class="gallery-cat-btn" data-filter="safety">Safety</button>
+            <button class="gallery-cat-btn" data-filter="training">Training</button>
+            <button class="gallery-cat-btn" data-filter="environment">Environment</button>
+            <button class="gallery-cat-btn" data-filter="infrastructure">Infrastructure</button>
+        </div>
+    </div>
+</section>
+
+<!-- ONGOING INITIATIVES -->
+<section style="padding:1rem 0 5rem;background:var(--deep)">
+    <div class="container">
+        <div class="section-header left" style="margin-bottom:2rem">
+            <div class="section-tag">Status: Active</div>
+            <h2 class="section-title">Ongoing <span>Projects</span></h2>
+        </div>
+        <div class="project-grid" id="projectsGrid">
+
+            <div class="project-card reveal" data-category="safety">
+                <div class="project-img placeholder-blue"><i class="fas fa-map-marked-alt project-img-icon"></i></div>
+                <div class="project-info">
+                    <h3>Maritime &amp; Waterways Safety</h3>
+                    <p>Improving navigational aids, marker buoys, and community safety awareness across 6 maritime provinces to reduce vessel accidents and fatalities in PNG waters.</p>
+                    <span class="project-tag">Ongoing</span>
+                </div>
+            </div>
+
+            <div class="project-card reveal reveal-delay-1" data-category="safety">
+                <div class="project-img placeholder-navy"><i class="fas fa-anchor project-img-icon"></i></div>
+                <div class="project-info">
+                    <h3>Small Craft Safety Act Rollout</h3>
+                    <p>Implementing the Small Craft Act across all provinces — registering dinghies and outboards, training operators, and deploying safety equipment to remote coastal villages.</p>
+                    <span class="project-tag">In Progress</span>
+                </div>
+            </div>
+
+            <div class="project-card reveal reveal-delay-2" data-category="training">
+                <div class="project-img placeholder-gold"><i class="fas fa-cogs project-img-icon"></i></div>
+                <div class="project-info">
+                    <h3>Engine Room Simulator</h3>
+                    <p>Procuring and installing a state-of-the-art engine room simulator at the PNG Maritime College to modernize training for the next generation of marine engineers.</p>
+                    <span class="project-tag tag-gold">Development</span>
+                </div>
+            </div>
+
+            <div class="project-card reveal" data-category="infrastructure">
+                <div class="project-img placeholder-teal"><i class="fas fa-lightbulb project-img-icon"></i></div>
+                <div class="project-info">
+                    <h3>Aids to Navigation Upgrade</h3>
+                    <p>Replacing aging lighthouses and buoys with solar-powered, self-monitoring navigational aids across key shipping lanes, ports, and reef passages throughout PNG.</p>
+                    <span class="project-tag">Ongoing</span>
+                </div>
+            </div>
+
+            <div class="project-card reveal reveal-delay-1" data-category="environment">
+                <div class="project-img placeholder-deep"><i class="fas fa-oil-can project-img-icon"></i></div>
+                <div class="project-info">
+                    <h3>National Oil Spill Contingency Plan</h3>
+                    <p>Reviewing and updating PNG's National Oil Spill Contingency Plan, pre-positioning response equipment, and training regional response teams across 5 coastal locations.</p>
+                    <span class="project-tag">In Progress</span>
+                </div>
+            </div>
+
+            <div class="project-card reveal reveal-delay-2" data-category="training">
+                <div class="project-img placeholder-ocean"><i class="fas fa-certificate project-img-icon"></i></div>
+                <div class="project-info">
+                    <h3>STCW Training Enhancement</h3>
+                    <p>Upgrading approved maritime training institutions with new curricula, simulators, and assessment systems to meet current STCW 2010 Manila Amendments requirements.</p>
+                    <span class="project-tag tag-done">Active</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- COMPLETED -->
+<section style="padding:5rem 0;background:var(--abyss);position:relative">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent)"></div>
+    <div class="container">
+        <div class="section-header left" style="margin-bottom:2rem">
+            <div class="section-tag">Completed</div>
+            <h2 class="section-title">Past <span>Achievements</span></h2>
+        </div>
+        <div class="project-grid">
+            <div class="project-card reveal">
+                <div class="project-img placeholder-navy"><i class="fas fa-ship project-img-icon"></i></div>
+                <div class="project-info">
+                    <h3>Port State Control Audit</h3>
+                    <p>Successfully completed a comprehensive audit of all international vessels calling at PNG's 4 major commercial ports, achieving a 95% deficiency correction rate.</p>
+                    <span class="project-tag tag-done">Completed 2024</span>
+                </div>
+            </div>
+            <div class="project-card reveal reveal-delay-1">
+                <div class="project-img placeholder-blue"><i class="fas fa-broadcast-tower project-img-icon"></i></div>
+                <div class="project-info">
+                    <h3>GMDSS Station Upgrade</h3>
+                    <p>Upgraded the MRCC Port Moresby's Global Maritime Distress and Safety System (GMDSS) communications infrastructure to IMO standards.</p>
+                    <span class="project-tag tag-done">Completed 2023</span>
+                </div>
+            </div>
+            <div class="project-card reveal reveal-delay-2">
+                <div class="project-img placeholder-gold"><i class="fas fa-users project-img-icon"></i></div>
+                <div class="project-info">
+                    <h3>Coastal Community Awareness</h3>
+                    <p>Reached over 12,000 coastal community members across 8 provinces with water safety, lifejacket usage, and emergency communication training campaigns.</p>
+                    <span class="project-tag tag-done">Completed 2023</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PARTNERSHIPS -->
+<section style="padding:5rem 0;background:var(--deep)">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-tag">Collaboration</div>
+            <h2 class="section-title">Our <span>Partners</span></h2>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-top:1rem">
+            <div class="mission-feat reveal" style="text-align:center;padding:1.75rem">
+                <i class="fas fa-globe" style="font-size:1.8rem;margin-bottom:.75rem"></i>
+                <h4>IMO</h4>
+                <p>International Maritime Organization — technical assistance, conventions, audits.</p>
+            </div>
+            <div class="mission-feat reveal reveal-delay-1" style="text-align:center;padding:1.75rem">
+                <i class="fas fa-ship" style="font-size:1.8rem;margin-bottom:.75rem"></i>
+                <h4>AUSMARIT</h4>
+                <p>Australian Maritime Safety Authority — capacity building and regional SAR coordination.</p>
+            </div>
+            <div class="mission-feat reveal reveal-delay-2" style="text-align:center;padding:1.75rem">
+                <i class="fas fa-anchor" style="font-size:1.8rem;margin-bottom:.75rem"></i>
+                <h4>Pacific Forum</h4>
+                <p>Pacific Islands Forum Fisheries Agency — maritime security and EEZ monitoring.</p>
+            </div>
+            <div class="mission-feat reveal reveal-delay-3" style="text-align:center;padding:1.75rem">
+                <i class="fas fa-handshake" style="font-size:1.8rem;margin-bottom:.75rem"></i>
+                <h4>JICA / ADB</h4>
+                <p>Development bank partnerships for infrastructure and training modernisation projects.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ALERT BANNER -->
+<div class="alert-banner">
+    <div class="container">
+        <div class="alert-inner">
+            <span class="alert-tag">Emergency</span>
+            <p class="alert-text"><strong>Maritime Distress Hotline:</strong> Contact NMSA MRCC on <strong>1234 1234</strong> (24 hours).</p>
+            <a href="tel:12341234" class="alert-action">Call Now <i class="fas fa-phone-alt"></i></a>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <a href="index.html" class="logo" style="margin-bottom:1rem;display:inline-flex">
+                    <div class="logo-emblem"><i class="fas fa-anchor"></i></div>
+                    <div class="logo-text"><span class="logo-name">NMSA</span><span class="logo-sub">Papua New Guinea</span></div>
+                </a>
+                <p>The statutory authority for maritime safety, marine environment protection, and maritime transport regulation in Papua New Guinea.</p>
+                <div class="footer-social">
+                    <a class="social-btn" href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a class="social-btn" href="#"><i class="fab fa-twitter"></i></a>
+                    <a class="social-btn" href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a class="social-btn" href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Headquarters</h4>
+                <div class="footer-contact-line"><i class="fas fa-map-marker-alt"></i><p>Defens Haus, Douglas Street<br>Port Moresby, NCD</p></div>
+                <div class="footer-contact-line"><i class="fas fa-mail-bulk"></i><p>PO Box 668, Port Moresby</p></div>
+                <div class="footer-contact-line"><i class="fas fa-phone-alt"></i><p><strong style="color:var(--gold)">1234 1234</strong> (24hr)</p></div>
+            </div>
+            <div class="footer-col">
+                <h4>Regional Offices</h4>
+                <ul>
+                    <li><span><i class="fas fa-circle-dot"></i>Lae Office</span></li>
+                    <li><span><i class="fas fa-circle-dot"></i>Madang Office</span></li>
+                    <li><span><i class="fas fa-circle-dot"></i>Alotau Office</span></li>
+                    <li><span><i class="fas fa-circle-dot"></i>Rabaul Office</span></li>
+                    <li><span><i class="fas fa-circle-dot"></i>Kimbe Office</span></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Report Pollution</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Vessel Registration</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Seafarer Certification</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Tenders &amp; Contracts</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Careers</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 National Maritime Safety Authority Papua New Guinea. All Rights Reserved.</p>
+            <div class="footer-bottom-links"><a href="#">Privacy Policy</a><a href="#">Terms of Use</a><a href="#">Accessibility</a></div>
+        </div>
+    </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+    // Initiative category filter
+    const filterBtns = document.querySelectorAll('.gallery-cat-btn');
+    const cards = document.querySelectorAll('#projectsGrid .project-card');
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const f = btn.dataset.filter;
+            cards.forEach(c => {
+                const match = f === 'all' || c.dataset.category === f;
+                c.style.display = match ? '' : 'none';
+            });
+        });
+    });
+</script>
+</body>
+</html>
